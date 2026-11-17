@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CloudPulse | Server Monitoring</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand"><span class="brand-mark">◈</span> CloudPulse</div><div class="side-label">SIGNED IN AS</div><div style="padding:0 18px 20px;color:#dce0ea;font-size:12px">{{ user_name }}</div>
+    <div class="side-label">WORKSPACE</div>
+    <a class="nav active" href="/">▦ &nbsp; Overview</a>
+    <a class="nav" href="#incidents">◷ &nbsp; Incidents</a>
+    <div class="sidebar-bottom">
+      <div class="mini-status"><span class="dot"></span><div><b>Monitoring active</b><small>Auto-refresh every 10 sec</small></div></div>
+      <form action="{{ url_for('logout') }}" method="post"><button class="secondary-btn" type="submit">Sign out</button></form><small class="muted">CloudPulse · Project demo</small>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div><div class="eyebrow">CLOUD OPERATIONS / OVERVIEW</div><h1>Infrastructure overview</h1><p class="sub">Welcome, {{ user_name }} · Threshold {{ threshold }}%</p><p class="sub">Monitor server health and investigate incidents.</p></div>
+      <div class="top-actions"><span class="live-pill"><span class="dot"></span> LIVE</span><button id="testAlert" class="secondary-btn">＋ Test alert</button></div>
+    </header>
+
+    <section class="notice" id="sourceNotice">
+      <span>ⓘ</span><div><b>Demo mode</b><p>Showing simulated sample metrics. Connect AWS CloudWatch to display real EC2 measurements.</p></div>
+    </section>
+
+    <section class="section-head"><div><h2>Server health</h2><p class="sub">Latest available measurements</p></div><span id="lastUpdated" class="muted">Waiting for data…</span></section>
+    <section class="cards">
+      <article class="metric-card"><div class="card-top"><span>CPU UTILIZATION</span><span class="metric-icon">⌁</span></div><div class="metric-value" id="cpuValue">--<small>%</small></div><div class="bar"><span id="cpuBar"></span></div><div class="card-foot"><span id="cpuCaption">Loading metric</span><span class="status-tag" id="cpuTag">--</span></div></article>
+      <article class="metric-card"><div class="card-top"><span>MEMORY UTILIZATION</span><span class="metric-icon">▤</span></div><div class="metric-value" id="memoryValue">--<small>%</small></div><div class="bar"><span id="memoryBar"></span></div><div class="card-foot"><span>Memory usage</span><span class="status-tag neutral" id="memoryTag">--</span></div></article>
+      <article class="metric-card"><div class="card-top"><span>SERVER STATUS</span><span class="metric-icon">◉</span></div><div class="metric-value status-value" id="serverStatus">--</div><div class="card-foot"><span id="serverName">Server</span><span class="status-tag good" id="serverTag">--</span></div></article>
+      <article class="metric-card"><div class="card-top"><span>ACTIVE INCIDENTS</span><span class="metric-icon">⚑</span></div><div class="metric-value" id="incidentCount">0</div><div class="card-foot"><span>Recorded events</span><span class="status-tag neutral">History</span></div></article>
+    </section>
+
+    <section class="content-grid">
+      <article class="panel chart-panel"><div class="panel-head"><div><h2>Resource utilization</h2><p class="sub">Recent CPU readings from this session</p></div><span class="legend"><i></i> CPU %</span></div><div class="chart-wrap"><canvas id="cpuChart"></canvas></div></article>
+      <article class="panel"><div class="panel-head"><div><h2>Monitoring details</h2><p class="sub">Current configuration</p></div></div><div class="details"><div><span>Metric source</span><b id="metricSource">--</b></div><div><span>Alert threshold</span><b id="thresholdValue">80%</b></div><div><span>Refresh interval</span><b>10 seconds</b></div><div><span>Server identifier</span><b id="detailServer">--</b></div></div><div class="threshold-note">Alerts are created when CPU utilization reaches the configured threshold.</div></article>
+    </section>
+
+    <section id="incidents" class="panel incidents-panel"><div class="panel-head"><div><h2>Recent incidents</h2><p class="sub">Latest alerts and recorded events</p></div><span class="count-pill" id="incidentPill">0 events</span></div><div class="table-wrap"><table><thead><tr><th>EVENT</th><th>DESCRIPTION</th><th>SEVERITY</th><th>TIME</th></tr></thead><tbody id="incidentRows"><tr><td colspan="4" class="empty">No incidents recorded yet.</td></tr></tbody></table></div></section>
+    <footer>CloudPulse · Cloud Server Health Monitoring & Incident Tracker</footer>
+  </main>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
